@@ -1,0 +1,34 @@
+name: Development
+
+# add a event trigger to run the workflow on push
+on: [ push ]
+
+jobs:
+  build-test:
+  # add a runner for ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    # checkout the repository
+    - uses: actions/checkout@v2
+    # add a new step to install .NET SDK 7
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.x
+
+    # add a new step to restore nuget package
+    - name: Restore nuget packages
+      run: dotnet restore
+
+    # add a new step to build the entire solution
+    - name: Build solution
+      run: dotnet build
+
+    # add a new step to run unit tests
+    - name: Run unit tests
+      run: dotnet test
+
+    # add a new step to publish src/WebAPI project under the publish directory
+    - name: Publish WebAPI project
+      run: dotnet publish src/WebAPI -c Release -o ./publish
